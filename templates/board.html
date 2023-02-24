@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Dashboard</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group me-2">
+               </div>
+        </div>
+    </div>
+
+    <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js" ></script>
+    <script>
+        var sum = {{values[0]}} + {{values[1]}}
+        var context = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(context, {
+            type: 'pie', // 차트의 형태
+            data: { // 차트에 들어갈 데이터
+                labels: [
+                        //x 축
+                        'good','bad'
+                    ],
+                    datasets: [
+                        { //데이터
+                            label: 'test1', //차트 제목
+                            fill: false, // line 형태일 때, 선 안쪽을 채우는지 안채우는지
+                            data: [
+                                {{values[0]}}/sum*100, {{values[1]}}/sum*100 //x축 label에 대응되는 데이터 값
+                            ],
+                            backgroundColor: [
+                                //색상
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 99, 132, 0.2)',
+                                
+                            ],
+                            borderColor: [
+                                //경계선 색상
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 99, 132, 1)',
+                                
+                            ],
+                            borderWidth: 1 //경계선 굵기
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+
+                }
+            }
+        });
+    </script>
+
+
+    <h3>History</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">time</th>
+                <th scope="col">good</th>
+                <th scope="col">bad</th>
+                <th scope="col">empty</th>
+            </tr>
+        </thead>
+        <tbody>
+        
+        {% for k in keys %}
+            <tr>
+                <td>{{ user_dict[k]['upload_time'] }}</td>
+                <td>{{ user_dict[k]['Good_posture'] }}</td>
+                <td>{{ user_dict[k]['Bad_posture'] }}</td>
+                <td>{{ user_dict[k]['Empty'] }}</td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
+
+
+
