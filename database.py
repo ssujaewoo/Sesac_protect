@@ -47,5 +47,5 @@ def db_visual_table():  #Draw table
     for k in key_list:
         user_dict[k]['upload_time'] = user_dict[k]['upload_time'] + dt.timedelta(hours=9)
         user_dict[k]['upload_time'] = user_dict[k]['upload_time'].strftime('%Y-%m-%d %H:%M:%S')
-    
+    key_list.reverse()
     return user_dict, key_list

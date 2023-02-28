@@ -14,8 +14,8 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'aiot'
 
 np.set_printoptions(suppress=True)
-model = load_model("/home/pi/Downloads/webapp/keras_model.h5", compile=False)
-
+model = load_model("/home/pi/Downloads/webapp/keras_model_v2.h5", compile=False)
+db_set()
 @app.before_request
 def before_request():
     session.permanent = True
@@ -46,10 +46,10 @@ def shutdown_session(exception=None):
 
 def camara_run():
     subprocess.run('sudo systemctl stop motion', shell=True)
-    subprocess.run('fswebcam -r 300x300 --no-banner /home/pi/Downloads/webapp/image.jpg', shell=True)
-    data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)
+    subprocess.run('fswebcam -r 200x200 --no-banner /home/pi/Downloads/webapp/image.jpg', shell=True)
+    data = np.ndarray(shape=(1, 150, 150, 3), dtype=np.float32)
     image = Image.open("/home/pi/Downloads/webapp/image.jpg").convert("RGB")
-    size = (224, 224)
+    size = (150, 150)
     image = ImageOps.fit(image, size, Image.Resampling.LANCZOS)
     image_array = np.asarray(image)
     normalized_image_array = (image_array.astype(np.float32) / 127.5) - 1
@@ -68,52 +68,53 @@ count = 0
 @app.route('/camera', methods=['POST']) #Press the start button
 def camera():
     global count
-    record = []
-    for i in range(0, 5):
-        # Camera로 Image 얻고 전처리
-        data = camara_run()
-        result = predict_posture(model, data)
+    for j in range(0,4):
+        record = []
+        for i in range(0, 5):
+            # Camera로 Image 얻고 전처리
+            data = camara_run()
+            result = predict_posture(model, data)
 
-        if (result == 0):
-            record.append(0)
-            # print('Good_posture')
-        elif (result == 1):
-            record.append(1)
-            # print('Bad_posture')
-        else:
-            record.append(2)
-            # print('empty')
-        time.sleep(1.5)
-    
-    # print(record)
-
-    count = count + 1
-    #db upload
-    good = record.count(0)
-    bad = record.count(1)
-    empty = record.count(2)
-    db_upload(good, bad, empty, count)
-    
-    green_pin = 18
-    yellow_pin = 23
-    fan_pin = 17
-    
-    bad_percent = (bad / 5) * 100
-    good_percent = (good / 5) * 100
-    if (bad_percent >= 50.0):
-        sensor_1.fan_on(fan_pin)
-        time.sleep(10)
-        sensor_1.fan_off(fan_pin)
-
-    elif(good_percent >= 50.0):
-        sensor_1.green_on(green_pin)
-        time.sleep(10)
-        sensor_1.green_off(green_pin)
+            if (result == 0):
+                record.append(0)
+                print('Bad_posture')
+            elif (result == 1):
+                record.append(1)
+                print('empty')
+            else:
+                record.append(2)
+                print('Good_posture')
+            time.sleep(1.5)
         
-    else:
-        sensor_1.yellow_on(yellow_pin)
-        time.sleep(10)
-        sensor_1.yellow_off(yellow_pin)
+        print(record)
+
+        count = count + 1
+        #db upload
+        bad = record.count(0)
+        empty = record.count(1)
+        good = record.count(2)
+        db_upload(good, bad, empty, count)
+        
+        green_pin = 18
+        yellow_pin = 23
+        fan_pin = 17
+        
+        bad_percent = (bad / 5) * 100
+        good_percent = (good / 5) * 100
+        if (bad_percent >= 50.0):
+            sensor_1.fan_on(fan_pin)
+            time.sleep(10)
+            sensor_1.fan_off(fan_pin)
+
+        elif(good_percent >= 50.0):
+            sensor_1.green_on(green_pin)
+            time.sleep(10)
+            sensor_1.green_off(green_pin)
+            
+        else:
+            sensor_1.yellow_on(yellow_pin)
+            time.sleep(10)
+            sensor_1.yellow_off(yellow_pin)
     
     return render_template('index.html')
 

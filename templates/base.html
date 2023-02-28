@@ -288,6 +288,8 @@
                 }
             }
         </style>
+        <link rel="stylesheet" href="/your-path-to-uicons/css/uicons-rounded-solid.css">
+        <link rel="stylesheet" href="/your-path-to-uicons/css/uicons-[your-style].css">
         <link href="https://fonts.googleapis.com/css?family=Playfair&#43;Display:700,900&amp;display=swap" rel="stylesheet">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/carousel.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/mbr-additional.css') }}" type="text/css">
@@ -295,6 +297,7 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-reboot.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/themestyle.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/sociconstyle.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/image.css') }}">
     </head>
     <body>
         <header>
@@ -310,7 +313,7 @@
                         <a class="nav-link active" aria-current="page" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a target="_blank" class="nav-link" href="http://192.168.50.178:8081/">Monitoring</a>
+                        <a target="_blank" class="nav-link" href="http://176.16.0.246:8081/">Monitoring</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{url_for('board', type = 'temp')}}">Board</a>
@@ -321,10 +324,10 @@
                         </div>
                     </li>
                     </ul>
-                    <form class="d-flex">
+                    <form class="d-flex" method="POST" action="/camera">
                     <button class="btn btn-outline-success">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+                      <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" width="16" height="16">
+                        <path d="M19.749,9.464,5,.048V23.989L19.743,14.54a3,3,0,0,0,.006-5.076Z"/>
                       </svg>
                     </button>
                     </form>
@@ -339,7 +342,7 @@
         <footer class="text-center">
             {% block footer %}
             <small>
-                "송예성, 송재환, 박재우, 박예지, 서상진"
+              <p> 참조 : <a target="_blank" href="http://riss.kr/search/detail/DetailView.do?p_mat_type=be54d9b8bc7cdb09&control_no=566a2257787c8669ffe0bdc3ef48d419&keyword=%EC%95%89%EC%9D%80%20%EC%9E%90%EC%84%B8">논문</a>,<a target="_blank" href="https://www.flaticon.com/kr/icon-fonts-most-downloaded">아이콘</a></p>
             </small>
             {% endblock %}
         </footer>
